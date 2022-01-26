@@ -7,7 +7,7 @@ from pydicom import read_file
 from os import walk, path
 import numpy as np
 from PIL import ImageTk
-from PIL import Image
+
 import time
 import SimpleITK as sitk
 from copy import deepcopy
@@ -28,6 +28,8 @@ from tkinter import messagebox
 import tkinter as tk
 from tkinter import StringVar
 import newWindow
+import socket
+import pickle
 
 
 
@@ -255,21 +257,21 @@ class MyWindow(QMainWindow):
         self.scroll_01.setMaximum(self.slices.shape[0])
         pixmap_imgSrc_01 = self.setInitGraph_01(self.scroll_01.value())
         self.graph_01.setPixmap(pixmap_imgSrc_01)
-        self.graph_01.setAlignment(Qt.AlignCenter);
+        self.graph_01.setAlignment(Qt.AlignCenter)
         # self.graph_01.setScaledContents(True)
 
         self.scroll_02.setValue((int)((self.slices.shape[0]) / 2))
         self.scroll_02.setMaximum(self.slices.shape[0])
         pixmap_imgSrc_02 = self.setInitGraph_02(self.scroll_02.value())
         self.graph_02.setPixmap(pixmap_imgSrc_02)
-        self.graph_02.setAlignment(Qt.AlignCenter);
+        self.graph_02.setAlignment(Qt.AlignCenter)
         # self.graph_02.setScaledContents(True)
 
         self.scroll_03.setValue((int)((self.slices.shape[0]) / 2))
         self.scroll_03.setMaximum(self.slices.shape[0])
         pixmap_imgSrc_03 = self.setInitGraph_03(self.scroll_03.value())
         self.graph_03.setPixmap(pixmap_imgSrc_03)
-        self.graph_03.setAlignment(Qt.AlignCenter);
+        self.graph_03.setAlignment(Qt.AlignCenter)
         # self.graph_03.setScaledContents(True)
 
     def open(self, img3D_array):
@@ -477,8 +479,7 @@ class MyWindow(QMainWindow):
         #sitk.WriteImage(out, 'path_saved.nii.gz')
     
     def unet_segment(self):
-        from unet import Unet
-        unet = Unet()
+        
         # fp = filedialog.askopenfilename()
         # imgs = sitk.ReadImage(fp)
         # img3D_array = sitk.GetArrayFromImage(imgs)
@@ -533,9 +534,39 @@ class MyWindow(QMainWindow):
                   desc=f'Processing',
                   mininterval=0.3) as pbar:
             for img in img3D_array:
+
                 peroidtime = time.time()
-                img = Image.fromarray(img)
-                imgUnet,pr=unet.detect_image(img)
+                
+
+                buffer = 4096*100
+                sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sk.connect(("192.168.3.106", 8000))
+                # path = reset_pic_quality(path)
+                # print("==begin===")
+                img = pickle.dumps(img, protocol=0)
+           
+                head=len(img)
+                sk.send(str(head).encode())
+                sk.send(img)
+            
+                
+                imgUnet=''.encode()
+                pr=''.encode()
+                head = int(sk.recv(buffer).decode())
+                while len(imgUnet)!=head: 
+                    data = sk.recv(buffer)
+                    imgUnet += data
+                sk.send('received'.encode())
+                head = int(sk.recv(buffer).decode())
+                while len(pr)!=head:
+                    data = sk.recv(buffer)
+                    pr += data    
+               
+
+                sk.close()
+                imgUnet = pickle.loads(imgUnet)
+                pr = pickle.loads(pr)
+
                 seg_img.append(imgUnet)
                 prUet.append(pr)
                 peroid = time.time() - peroidtime

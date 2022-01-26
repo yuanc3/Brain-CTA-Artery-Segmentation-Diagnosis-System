@@ -110,7 +110,7 @@ class Unet(object):
             images = torch.from_numpy(images).type(torch.FloatTensor)
             
             images =images.to(device)
-
+            
             pr = self.net(images)[0]
             #---------------------------------------------------#
             #   取出每一个像素点的种类
