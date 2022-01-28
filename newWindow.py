@@ -324,21 +324,21 @@ class NewWindow(QMainWindow):
         self.scroll_01.setMaximum(self.slices.shape[0])
         pixmap_imgSrc_01 = self.setInitGraph_01(self.scroll_01.value())
         self.graph_01.setPixmap(pixmap_imgSrc_01)
-        self.graph_01.setAlignment(Qt.AlignCenter);
+        self.graph_01.setAlignment(Qt.AlignCenter)
         # self.graph_01.setScaledContents(True)
 
         self.scroll_02.setValue((int)((self.slices.shape[0]) / 2))
         self.scroll_02.setMaximum(self.slices.shape[0])
         pixmap_imgSrc_02 = self.setInitGraph_02(self.scroll_02.value())
         self.graph_02.setPixmap(pixmap_imgSrc_02)
-        self.graph_02.setAlignment(Qt.AlignCenter);
+        self.graph_02.setAlignment(Qt.AlignCenter)
         # self.graph_02.setScaledContents(True)
 
         self.scroll_03.setValue((int)((self.slices.shape[0]) / 2))
         self.scroll_03.setMaximum(self.slices.shape[0])
         pixmap_imgSrc_03 = self.setInitGraph_03(self.scroll_03.value())
         self.graph_03.setPixmap(pixmap_imgSrc_03)
-        self.graph_03.setAlignment(Qt.AlignCenter);
+        self.graph_03.setAlignment(Qt.AlignCenter)
         # self.graph_03.setScaledContents(True)
 
     def open(self, img3D_array):
@@ -448,7 +448,7 @@ class NewWindow(QMainWindow):
         self.pixmap_imgSrc_1 = QPixmap.fromImage(image).scaled(self.graph_01_width, self.graph_01_height)
         self.graph_01.setPixmap(self.pixmap_imgSrc_1)
         # 图片在label中居中显示
-        self.graph_01.setAlignment(Qt.AlignCenter);
+        self.graph_01.setAlignment(Qt.AlignCenter)
         self.graph_01.setScaledContents(False)
 
     def refeshGraph_02(self,img):
@@ -461,7 +461,7 @@ class NewWindow(QMainWindow):
         image = QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3, QImage.Format_RGB888)
         self.pixmap_imgSrc_2 = QPixmap.fromImage(image).scaled(self.graph_01_width, self.graph_01_height)
         self.graph_02.setPixmap(self.pixmap_imgSrc_2)
-        self.graph_02.setAlignment(Qt.AlignCenter);
+        self.graph_02.setAlignment(Qt.AlignCenter)
         self.graph_02.setScaledContents(False)
 
     def refeshGraph_03(self,img):
@@ -474,7 +474,7 @@ class NewWindow(QMainWindow):
         image = QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3, QImage.Format_RGB888)
         self.pixmap_imgSrc_3 = QPixmap.fromImage(image).scaled(self.graph_01_width, self.graph_01_height)
         self.graph_03.setPixmap(self.pixmap_imgSrc_3)
-        self.graph_03.setAlignment(Qt.AlignCenter);
+        self.graph_03.setAlignment(Qt.AlignCenter)
         self.graph_03.setScaledContents(False)
 
     def sliderMoved_01(self):
@@ -672,7 +672,7 @@ class NewWindow(QMainWindow):
             out.SetDirection((0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0))
         #sitk.WriteImage(out, 'path_saved.nii.gz')
         #删除控件并更新
-        self.vtkWidget3D.Finalize();
+        self.vtkWidget3D.Finalize()
         self.rightgrid_layout_21.removeWidget(self.frame3D)
         sip.delete(self.frame3D)
         self.frame3DTwo, self.vtkWidget3DTwo=createModel.model(self.fp,self.slices)

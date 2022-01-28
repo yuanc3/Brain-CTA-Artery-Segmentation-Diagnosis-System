@@ -357,7 +357,7 @@ class MyWindow(QMainWindow):
         pixmap_imgSrc = QPixmap.fromImage(image).scaled(self.graph_01_width, self.graph_01_height)
         self.graph_01.setPixmap(pixmap_imgSrc)
         # 图片在label中居中显示
-        self.graph_01.setAlignment(Qt.AlignCenter);
+        self.graph_01.setAlignment(Qt.AlignCenter)
         self.graph_01.setScaledContents(False)
 
     def sliderMoved_02(self):
@@ -370,7 +370,7 @@ class MyWindow(QMainWindow):
         image = QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3, QImage.Format_RGB888)
         pixmap_imgSrc = QPixmap.fromImage(image).scaled(self.graph_01_width, self.graph_01_height)
         self.graph_02.setPixmap(pixmap_imgSrc)
-        self.graph_02.setAlignment(Qt.AlignCenter);
+        self.graph_02.setAlignment(Qt.AlignCenter)
         self.graph_02.setScaledContents(False)
 
     def sliderMoved_03(self):
@@ -384,7 +384,7 @@ class MyWindow(QMainWindow):
         image = QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3, QImage.Format_RGB888)
         pixmap_imgSrc = QPixmap.fromImage(image).scaled(self.graph_01_width, self.graph_01_height)
         self.graph_03.setPixmap(pixmap_imgSrc)
-        self.graph_03.setAlignment(Qt.AlignCenter);
+        self.graph_03.setAlignment(Qt.AlignCenter)
         self.graph_03.setScaledContents(False)
 
     # 定义鼠标事件
@@ -582,9 +582,8 @@ class MyWindow(QMainWindow):
         seg_imgarray = np.stack([s for s in seg_img])
         #slices
         prUetarray=np.stack([s for s in prUet])
-
-        global window
-        window = newWindow.NewWindow(seg_imgarray, self.fp, prUetarray,self.number)
+        global DLwindow
+        DLwindow = newWindow.NewWindow(self.slices, self.fp, prUetarray,self.number)
         # img=Image.fromarray(img)
         # img=ImageTk.PhotoImage(img)
         # l1.config(image=img)
