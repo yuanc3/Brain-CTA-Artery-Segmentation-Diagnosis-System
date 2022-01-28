@@ -6,28 +6,14 @@ from PyQt5.QtCore import *
 from pydicom import read_file
 from os import walk, path
 import numpy as np
-from PIL import ImageTk
-from PIL import Image
-import time
 import SimpleITK as sitk
 from copy import deepcopy
 import NewQslider
 import cv2
-import vtk
-from PyQt5.QtOpenGL import QGLWidget 
-from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from MyLabel import MyLabel
-import math
-from vtk.util import numpy_support
 from KeyPressInteractorStyle import *
-from vtk.util import vtkImageImportFromArray
 import createModel
-from threading import Thread
-import RGwindow
-from tkinter import messagebox
-import tkinter as tk
-from tkinter import StringVar
-import ConstratSlider
+import sip
+
 
 class NewWindow(QMainWindow):
     def __init__(self, slices, fp,pr,number):

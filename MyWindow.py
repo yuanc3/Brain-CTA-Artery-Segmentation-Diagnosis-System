@@ -12,7 +12,6 @@ from copy import deepcopy
 import NewQslider
 import cv2
 from MyLabel import MyLabel
-import math
 from KeyPressInteractorStyle import *
 import createModel
 from threading import Thread
