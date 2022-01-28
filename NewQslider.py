@@ -1,4 +1,6 @@
 from PyQt5.Qt import *
+
+
 class MyQSlider(QSlider):
     def __init__(self,parent=None,*args,**kwargs):
         super().__init__(parent,*args,**kwargs)

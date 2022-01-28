@@ -1,10 +1,9 @@
 import random
-import createModel
+import twoDGrowSeg
+import copy
 
 def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAccept,selectSeedRange,rangeChangeAccept,direction):
-    import twoDGrowSeg
-    import copy
-    import cv2
+    
 
     seeds = [twoDGrowSeg.Point(yPosition, xPosition)]
     x_new = []

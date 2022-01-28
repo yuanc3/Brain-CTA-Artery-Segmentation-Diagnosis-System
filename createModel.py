@@ -1,25 +1,12 @@
-import sys
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from pydicom import read_file
-from os import walk, path
 import numpy as np
-from PIL import Image, ImageTk
-import time
 import SimpleITK as sitk
-from copy import deepcopy
-import NewQslider
-import cv2
 import vtk
-from PyQt5.QtOpenGL import QGLWidget 
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from MyLabel import MyLabel
-import math
 from vtk.util import numpy_support
 from KeyPressInteractorStyle import *
-from vtk.util import vtkImageImportFromArray
 
 
 def model(fp, slices):

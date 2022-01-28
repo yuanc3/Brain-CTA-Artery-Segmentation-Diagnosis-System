@@ -6,21 +6,14 @@ from PyQt5.QtCore import *
 from pydicom import read_file
 from os import walk, path
 import numpy as np
-from PIL import ImageTk
-
 import time
 import SimpleITK as sitk
 from copy import deepcopy
 import NewQslider
 import cv2
-import vtk
-from PyQt5.QtOpenGL import QGLWidget 
-from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from MyLabel import MyLabel
 import math
-from vtk.util import numpy_support
 from KeyPressInteractorStyle import *
-from vtk.util import vtkImageImportFromArray
 import createModel
 from threading import Thread
 import RGwindow
@@ -30,7 +23,9 @@ from tkinter import StringVar
 import newWindow
 import socket
 import pickle
-
+import threeDGrowSeg
+import time
+from tqdm import tqdm
 
 
 global winwidth
@@ -450,8 +445,7 @@ class MyWindow(QMainWindow):
        
 
     def ThreeDGrowSegment(self):
-        import threeDGrowSeg
-        import time
+        
         time_start = time.time()  # 开始计时
         thresh = 8  # 调节灰度取值域
         limit = 1200  # 调节灰度面积取值上限
@@ -529,7 +523,7 @@ class MyWindow(QMainWindow):
         jindutiao.protocol("WM_DELETE_WINDOW", end)
 
         print("\nStart segmentation...")
-        from tqdm import tqdm
+        
         with tqdm(total=len(img3D_array),
                   desc=f'Processing',
                   mininterval=0.3) as pbar:
