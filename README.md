@@ -1,5 +1,4 @@
-# Brain-CTA-Artery-Segmentation-Diagnosis-System
-# 脑部 CTA 血管分割系统
+# Brain-CTA-Artery-Segmentation-Diagnosis-System (脑部 CTA 血管分割系统)
 
 ## Introduction
 1. 【查看】可以打开CTA文件从三个角度进行浏览，查阅像素位置、灰度信息，浏览三维重建效果。 
