@@ -10,4 +10,4 @@
 
 ## Usage
 1. 运行 **Main**  
-2. 打开CTA文件格式为**.nii.gz**
+2. 打开CTA文件格式为 **.nii.gz**
