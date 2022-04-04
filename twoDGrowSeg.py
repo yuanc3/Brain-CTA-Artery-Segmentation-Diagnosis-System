@@ -1,5 +1,5 @@
-import numpy as np
-import copy
+from numpy import zeros
+from copy import deepcopy
 
 
 class Point(object):
@@ -18,7 +18,6 @@ def getGrayDiff(img, seedGray, tmpPoint):
     return abs(seedGray - int(img[tmpPoint.x, tmpPoint.y]))
 
 
-
 def selectConnects(p):
     if p != 0:
         connects = [Point(-1, -1), Point(0, -1), Point(1, -1), Point(1, 0), Point(1, 1), \
@@ -32,8 +31,8 @@ def regionGrow(img, seeds, seedGray,x_mid,y_mid,thresh,limit):
 
     height, weight = img.shape
 
-    seedMark =np.zeros(img.shape)
-    img_=copy.deepcopy(img)
+    seedMark =zeros(img.shape)
+    img_=deepcopy(img)
     seedList = []
     x_boundary=[0,0]
     y_boundary=[0,0]

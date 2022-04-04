@@ -1,4 +1,4 @@
-from PyQt5.Qt import *
+from PyQt5.QtWidgets import QSlider,QLabel
 
 class ConstratQSlider(QSlider):
     def __init__(self,parent=None,*args,**kwargs):
@@ -15,7 +15,7 @@ class ConstratQSlider(QSlider):
         y =  (self.height()-self.label.height())/2
         self.label.move(x,y)
         self.label.show()
-        print("Slider value", self.value())
+        # print("Slider value", self.value())
         self.label.setText(str(self.value()))
 
     def mouseMoveEvent(self, evt):
