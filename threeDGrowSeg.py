@@ -1,10 +1,10 @@
-import random
+from random import choice
 import twoDGrowSeg
-import copy
+from copy import deepcopy
+
 
 def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAccept,selectSeedRange,rangeChangeAccept,direction):
     
-
     seeds = [twoDGrowSeg.Point(yPosition, xPosition)]
     x_new = []
     y_new = []
@@ -22,7 +22,7 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
         times = 0
         while i < len(slices):
             times += 1
-            recentImage = copy.deepcopy(slices[i, :, :])
+            recentImage = deepcopy(slices[i, :, :])
             if (times >= 2):
                 previousTempArea = len(seedArray)
             binaryImg, x_boundary, y_boundary, judge, seedArray = twoDGrowSeg.regionGrow(slices[i, :, :], seeds, seedGray,
@@ -35,7 +35,7 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
             #更新参考选择灰度
             seedGray=0
             for j in range(100):
-                randomSeed=random.choice(seedArray)
+                randomSeed=choice(seedArray)
                 seedGray+=slices[i,randomSeed.x,randomSeed.y]
             seedGray=seedGray//100
 
@@ -44,8 +44,8 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
                     recentTempArea - previousTempArea) > changeAccept or judge == 1 or recentTempArea == 0)):
                 slices[i, :, :] = recentImage
                 break
-            if(len(seedArray)!=len(seedArray_)):
-                print(i,"开始分叉")
+            # if(len(seedArray)!=len(seedArray_)):
+            #     print(i,"开始分叉")
 
 
             x_min = x_boundary[0]
@@ -54,7 +54,7 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
             y_max = y_boundary[1]
             x_mid=(x_min+x_max)//2
             y_mid=(y_min+y_max)//2
-            slices[i, :, :] = copy.deepcopy(binaryImg)
+            slices[i, :, :] = deepcopy(binaryImg)
 
 
 
@@ -81,7 +81,7 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
         seedArray.clear()
         previousArea = 0
         for i in range(number - 1):
-            recentImage = copy.deepcopy(slices[number - i - 1, :, :])
+            recentImage = deepcopy(slices[number - i - 1, :, :])
             if (i >= 1):
                 previousTempArea = len(seedArray)
                 previousArea = abs(x_max - x_min) * abs(y_max - y_min)
@@ -91,7 +91,7 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
             if len(seedArray)!=0:
                 tempSeedGray.clear()
                 for j in range(100):
-                    randomSeed = random.choice(seedArray)
+                    randomSeed = choice(seedArray)
                     tempSeedGray.append(slices[number - i - 1, randomSeed.x, randomSeed.y])
                 tempSeedGray.sort()
                 seedGray = tempSeedGray[60]
@@ -108,7 +108,7 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
                 Density=0
             else:
                 Density=recentTempArea / recentArea
-            slices[number - i - 1, :, :] = copy.deepcopy(binaryImg)
+            slices[number - i - 1, :, :] = deepcopy(binaryImg)
 
             #检测异常
             Test=0
@@ -152,56 +152,56 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
                 Max_Num += hhh
 
                 if(Max_Num>10):
-                    slices[number - i - 1, :, :] = copy.deepcopy(recentImage)
+                    slices[number - i - 1, :, :] = deepcopy(recentImage)
                     break
 
             if (i >= 1 and (abs(recentTempArea - previousTempArea) > changeAccept or judge == 1 or recentTempArea==0
                             or abs(recentArea-previousArea)>rangeChangeAccept ) ):
-                slices[number - i - 1, :, :] =copy.deepcopy(recentImage)
-                print("SeedArea:",recentTempArea - previousTempArea,"Area:",recentArea-previousArea,"Density:",Density)
+                slices[number - i - 1, :, :] =deepcopy(recentImage)
+                # print("SeedArea:",recentTempArea - previousTempArea,"Area:",recentArea-previousArea,"Density:",Density)
 
                 break
             if (i >= 1 and len(seedArray) < 60):
                 label = 1
             if (label == 1 and abs(recentTempArea - previousTempArea) > 70 and abs(recentArea - previousArea) > 70):
-                slices[number - i - 1, :, :] = copy.deepcopy(recentImage)
+                slices[number - i - 1, :, :] = deepcopy(recentImage)
                 break
             seedBranch_1.clear()
-            seedBranch_1.append(random.choice(seedArray))
+            seedBranch_1.append(choice(seedArray))
             binaryImg_, x_boundary_, y_boundary_, judge_, seedArray_ = twoDGrowSeg.regionGrow(binaryImg, seedBranch_1,
                                                                                               252, x_mid, y_mid, 5, limit)
             # print(len(seedArray), len(seedArray_))
             if (len(seedArray) != len(seedArray_)):
-                slices[number - i - 1, :, :] = copy.deepcopy(recentImage)
-                print(number - i, "开始分叉")
+                slices[number - i - 1, :, :] = deepcopy(recentImage)
+                # print(number - i, "开始分叉")
                 for r in range(100):
                     if abs(int(slices[number-i-1,seedBranch_1[0].x,seedBranch_1[0].y])-seedGray)>2:
                         seedBranch_1.clear()
-                        seedBranch_1.append(random.choice(seedArray_))
+                        seedBranch_1.append(choice(seedArray_))
                     else:
                         break
 
                 for j in range(35):
-                    slices[number - i - 1, :, :] = copy.deepcopy(recentImage)
+                    slices[number - i - 1, :, :] = deepcopy(recentImage)
                     seedBranch_2.clear()
-                    RandomSeed = random.choice(seedArray)
+                    RandomSeed = choice(seedArray)
                     seedBranch_2.append(RandomSeed)
                     for r in range(100):
 
                         if abs(int(slices[number - i - 1, seedBranch_2[0].x, seedBranch_2[0].y]) - seedGray) > 2:
                             seedBranch_2.clear()
-                            RandomSeed = random.choice(seedArray)
+                            RandomSeed = choice(seedArray)
                             seedBranch_2.append(RandomSeed)
                         else:
                             break
-                    slices[number - i - 1, :, :] = copy.deepcopy(binaryImg)
+                    slices[number - i - 1, :, :] = deepcopy(binaryImg)
                     binaryImg_1, x_boundary_1, y_boundary_1, judge_1, seedArray_1 = twoDGrowSeg.regionGrow(
                         binaryImg, seedBranch_2,
                         252, x_mid, y_mid, 5, limit)
 
                     if(abs(len(seedArray_1)+len(seedArray_)-len(seedArray))<5 and len(seedArray_1)>5 and len(seedArray_)>5 ):
-                        slices[number - i - 1, :, :] = copy.deepcopy(recentImage)
-                        print("找到分叉")
+                        slices[number - i - 1, :, :] = deepcopy(recentImage)
+                        # print("找到分叉")
 
                         Branch=1
                         break
@@ -211,9 +211,9 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
             if(Branch==1):
 
                 if len(seedArray_)>5:
-                    slices=copy.deepcopy(Processing(slices,number-i,seedBranch_1[0].y, seedBranch_1[0].x, thresh,limit,seedGray,changeAccept,selectSeedRange,rangeChangeAccept,1))
+                    slices=deepcopy(Processing(slices,number-i,seedBranch_1[0].y, seedBranch_1[0].x, thresh,limit,seedGray,changeAccept,selectSeedRange,rangeChangeAccept,1))
                 if len(seedArray_1)>5:
-                    slices=copy.deepcopy(Processing(slices, number - i , seedBranch_2[0].y, seedBranch_2[0].x, thresh, limit,seedGray,changeAccept, selectSeedRange,rangeChangeAccept,1))
+                    slices=deepcopy(Processing(slices, number - i , seedBranch_2[0].y, seedBranch_2[0].x, thresh, limit,seedGray,changeAccept, selectSeedRange,rangeChangeAccept,1))
                 break
 
 
