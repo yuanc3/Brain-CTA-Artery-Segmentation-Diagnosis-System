@@ -160,7 +160,7 @@ class MyWindow(QMainWindow):
     #     print("contactUs")
 
     def myGrid(self):
-
+        self.numberOfScreen = 0
         # 定义顶级布局管理器
         self.mainLayout = QHBoxLayout()
         # 定义左侧布局管理器
