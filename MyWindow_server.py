@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 import base64
 import os
 from seg_ico import imglogo
@@ -301,6 +303,7 @@ class MyWindow(QMainWindow):
         self.rightgrid_layout_2.setStretchFactor(self.rightgrid_layout_22, 1)
         self.mainLayout.setStretchFactor(self.leftgrid_layout, 1)
         self.mainLayout.setStretchFactor(self.rightgrid_layout, 4)
+        self.ThreeD.setEnabled(False)
 
         # 创建一个左侧窗口的窗口对象
         # leftlayout_widget = QWidget(leftFrame)
@@ -329,11 +332,21 @@ class MyWindow(QMainWindow):
         # self.AllDetection.setEnabled(True)
         array = []
         # 获得选择好的文件
-        # try:
+        #try:
         self.fp = QFileDialog.getOpenFileName()
         smallStr = ".nii"
         imageFlag = smallStr in self.fp[0]
+        for ch in self.fp[0]:
+            if u'\u4e00' <= ch <= u'\u9fff' and imageFlag==True:
+                warning = "Please put the nii under the English directory"
+                msg_box = QMessageBox(QMessageBox.Information, 'Warning', warning)
+                msg_box.exec_()
+                return
+        #imageFlag = smallStr in self.fp[0]
         if imageFlag == False:
+            warning = "Please choose the nii format file"
+            msg_box = QMessageBox(QMessageBox.Information, 'Warning', warning)
+            msg_box.exec_()
             return
         # print(self.fp[0])
         self.graphName = self.fp[0].split("/")
@@ -350,12 +363,14 @@ class MyWindow(QMainWindow):
                 # print("MAKABAKA",self.fp[0])
                 self.vtkWidget3D.Finalize()
                 self.rightgrid_layout_21.removeWidget(self.frame3D)
-        # print(self.fp[0])
         imgs = ReadImage(self.fp[0])
+        #imgs = ReadImage(fileNameOpen)
         TestDirection = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
         img3D_array = GetArrayFromImage(imgs)
         # except:
-        #     print("Error")
+        #     warning = "Please put the nii under the English directory and open the format of nii"
+        #     msg_box = QMessageBox(QMessageBox.Information, 'Warning', warning)
+        #     msg_box.exec_()
         #     self.windowUpdate = False
         #     return
 
@@ -365,7 +380,7 @@ class MyWindow(QMainWindow):
             img3D_array = stack([s for s in array])
             global Label_Direction
             Label_Direction = 1
-        img3D_array = self.preprocessing(img3D_array)
+        img3D_array = deepcopy(self.preprocessing(img3D_array))
         self.open(img3D_array)
         self.move(450, 0)
         self.imageLength = self.slices.shape[0]
@@ -403,16 +418,17 @@ class MyWindow(QMainWindow):
         self.setWindowTitle(self.windowName + "-" + self.graphName[self.length - 1])
         # 用lstFilesDCM作为存放DICOM files的列表
         # PathDicom = filePath #与python文件同一个目录下的文件夹
-        self.slices = img3D_array
+        self.slices = deepcopy(img3D_array)
         # print(self.slices.shape)
         HHH = self.slices[len(self.slices) // 2 - 1].sum() / (512 * 512)
         if HHH < 6:
             adj = (6 - HHH) / 10.972
             self.slices = ((pow(abs(self.slices) / 255, 1 - adj) * 255)).astype(uint8)
-        self.slices[self.slices > 220] = 220
+        if(len(self.slices[self.slices == 255])<15000):
+            self.slices[self.slices > 220] = 220
         # 存一个slices的备份
-        self.slices_Wang = self.slices
-        self.slices_Yuan = self.slices
+        self.slices_Wang = deepcopy(self.slices)
+        self.slices_Yuan = deepcopy(self.slices)
         # print("Open:", self.slices.shape)
         self.slicesRGB = deepcopy(self.slices)
         # if self.windowUpdate:
