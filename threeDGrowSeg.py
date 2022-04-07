@@ -27,7 +27,8 @@ def Processing(slices,number,xPosition,yPosition,thresh,limit,seedGray,changeAcc
                 previousTempArea = len(seedArray)
             binaryImg, x_boundary, y_boundary, judge, seedArray = twoDGrowSeg.regionGrow(slices[i, :, :], seeds, seedGray,
                                                                                          x_mid, y_mid,thresh,limit)
-
+            if(len(seedArray)==0):
+                break
             seedBranch_1.clear()
             seedBranch_1.append(twoDGrowSeg.Point(seedArray[len(seedArray)//2].x,seedArray[len(seedArray)//2].y))
             binaryImg_, x_boundary_, y_boundary_, judge_, seedArray_ = twoDGrowSeg.regionGrow(binaryImg, seedBranch_1,

@@ -49,7 +49,7 @@ class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.contrVal = 1
-        self.numberOfScreen = 0
+        #self.numberOfScreen = 0
         self.initUI()
         self.PenFlag = False
         self.RubberFlag = False
@@ -325,8 +325,8 @@ class MyWindow(QMainWindow):
     # 自定义函数
     def open_file(self):
         # 重新启用按钮
-        self.saveMenu.setEnabled(True)
-        self.DLSegment.setEnabled(True)
+        # self.saveMenu.setEnabled(True)
+        # self.DLSegment.setEnabled(True)
         # self.ClotDetection.setEnabled(True)
         # self.VesselDetection.setEnabled(True)
         # self.AllDetection.setEnabled(True)
@@ -382,6 +382,9 @@ class MyWindow(QMainWindow):
             Label_Direction = 1
         img3D_array = deepcopy(self.preprocessing(img3D_array))
         self.open(img3D_array)
+        self.saveMenu.setEnabled(True)
+        if (len(self.slices[self.slices == 255]) < 15000):
+            self.DLSegment.setEnabled(True)
         self.move(450, 0)
         self.imageLength = self.slices.shape[0]
         # print(self.imageLength)
@@ -424,6 +427,10 @@ class MyWindow(QMainWindow):
         if HHH < 6:
             adj = (6 - HHH) / 10.972
             self.slices = ((pow(abs(self.slices) / 255, 1 - adj) * 255)).astype(uint8)
+        if (len(self.slices[self.slices == 255]) > 15000):
+            self.Drawing.setEnabled(True)
+            self.ClotDetection.setEnabled(True)
+            self.DLSegment.setEnabled(False)
         if(len(self.slices[self.slices == 255])<15000):
             self.slices[self.slices > 220] = 220
         # 存一个slices的备份
@@ -823,43 +830,48 @@ class MyWindow(QMainWindow):
     #     RG3Dwindow.showNormal()
 
     def ThreeDGrowSegment(self):
-
         # time_start = time.time()  # 开始计时
-        thresh = 8  # 调节灰度取值域
-        limit = 1200  # 调节灰度面积取值上限
-        changeAccept = 350  # 调节覆盖点变化量上限
-        selectSeedRange = 10  # 种子点选择域
-        rangeChangeAccept = 2000  # 调节允许灰度面积变化量上限
-        seedGray = self.slices[self.number - 1, self.yPosition, self.xPosition]
-        self.slices = threeDGrowSeg.Processing(self.slices, self.number, self.xPosition, self.yPosition, thresh, limit,
-                                               seedGray,
-                                               changeAccept, selectSeedRange, rangeChangeAccept, direction=2)
-        self.vtkWidget3D.Finalize()
-        self.rightgrid_layout_21.removeWidget(self.frame3D)
-        self.frame3D, self.vtkWidget3D = createModel.model(self.fp, self.slices, self.vtkFlag, self.labelFalg)
-        self.frame3D.setFocusPolicy(Qt.NoFocus)
-        # self.rightgrid_layout_21.removeWidget(self.frame3D)
-        self.rightgrid_layout_21.addWidget(self.frame3D)
-        # time_end = time.time()  # 结束计时
-        # timeperoid = time_end - time_start
-        # print(timeperoid)
-        # 获取无背景图
-        slices_only = deepcopy(self.slices)
-        slices_only[slices_only < 250] = 0
+        try:
+            thresh = 8  # 调节灰度取值域
+            limit = 1200  # 调节灰度面积取值上限
+            changeAccept = 350  # 调节覆盖点变化量上限
+            selectSeedRange = 10  # 种子点选择域
+            rangeChangeAccept = 2000  # 调节允许灰度面积变化量上限
+            seedGray = self.slices[self.number - 1, self.yPosition, self.xPosition]
+            self.slices = threeDGrowSeg.Processing(self.slices, self.number-1, self.xPosition, self.yPosition, thresh, limit,
+                                                   seedGray,
+                                                   changeAccept, selectSeedRange, rangeChangeAccept, direction=2)
+            self.vtkWidget3D.Finalize()
+            self.rightgrid_layout_21.removeWidget(self.frame3D)
+            self.frame3D, self.vtkWidget3D = createModel.model(self.fp, self.slices, self.vtkFlag, self.labelFalg)
+            self.frame3D.setFocusPolicy(Qt.NoFocus)
+            # self.rightgrid_layout_21.removeWidget(self.frame3D)
+            self.rightgrid_layout_21.addWidget(self.frame3D)
+            # time_end = time.time()  # 结束计时
+            # timeperoid = time_end - time_start
+            # print(timeperoid)
+            # 获取无背景图
+            slices_only = deepcopy(self.slices)
+            slices_only[slices_only < 250] = 0
 
-        ##导出nii
-        # 原图
-        # out = sitk.GetImageFromArray(self.slices)
-        # 无背景图
-        out = GetImageFromArray(slices_only)
-        if Label_Direction == 1:
-            out.SetDirection((0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0))
-        # sitk.WriteImage(out, 'path_saved.nii.gz')
-        self.refeshGraph_01(self.slices[self.number - 1, :, :])
-        self.refeshGraph_02(self.slices[:, :, self.number_2 - 1])
-        self.refeshGraph_03(self.slices[:, self.number_3 - 1, :])
-        self.ClotDetection.setEnabled(True)
-        self.Drawing.setEnabled(True)
+            ##导出nii
+            # 原图
+            # out = sitk.GetImageFromArray(self.slices)
+            # 无背景图
+            out = GetImageFromArray(slices_only)
+            if Label_Direction == 1:
+                out.SetDirection((0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0))
+            # sitk.WriteImage(out, 'path_saved.nii.gz')
+            self.refeshGraph_01(self.slices[self.number - 1, :, :])
+            self.refeshGraph_02(self.slices[:, :, self.number_2 - 1])
+            self.refeshGraph_03(self.slices[:, self.number_3 - 1, :])
+            self.ClotDetection.setEnabled(True)
+            self.Drawing.setEnabled(True)
+            self.reportNeedChange = True
+            self.clotReportNeedChange = True
+            self.vesselReportNeedChange = True
+        except:
+            pass
         # self.VesselDetection.setEnabled(True)
         # self.AllDetection.setEnabled(True)
 
@@ -999,6 +1011,7 @@ class MyWindow(QMainWindow):
         self.reportNeedChange = False
         self.clotReportNeedChange = False
         self.vesselReportNeedChange = False
+        self.DLSegment.setEnabled(False)
         # except BaseException as e:
         #     print(e)
 
@@ -1015,36 +1028,44 @@ class MyWindow(QMainWindow):
             self.close()
 
     def DoOneAll(self):
-        if (self.reportNeedChange):
-            self.objFlag = 3
-            mark_1 = 250  # 内部血块标记灰度
-            mark_2 = 251  # 内部血管标记灰度
-            self.obj = ClotDetect.ClotDetection()
-            self.obj_2 = VesselDetect.VesselDetection()
-            if (self.vesselReportNeedChange == True):
-                self.slices, self.vesselReport, self.vesselReportResult = self.obj_2.Processing(self.slices,
-                                                                                                self.slicesRGB, mark_2,
-                                                                                                thresh=255, flag=True,
-                                                                                                windowFlag=False,
-                                                                                                ifClosed=True)
-                self.slices[self.slices == mark_2] = 255
-            if (self.clotReportNeedChange == True):
-                self.slices, self.clotReport, self.clotReportResult = self.obj.Processing(self.slices, self.slicesRGB,
-                                                                                          mark_1, thresh=254, flag=True,
-                                                                                          windowFlag=False,
-                                                                                          ifClosed=True)
-                self.slices[self.slices == mark_1] = 254
-            self.clotReportNeedChange = False
-            self.vesselReportNeedChange = False
-            self.reportNeedChange = False
-        self.allReportResult = self.clotReport + "\n" + self.vesselReport
-        self.pdfAllPreview = PDFPreviewWindow.PDFPreviewWindow(self.allReportResult, self.slices, self.clotReportResult,
-                                                               True, self.graphName[self.length - 1])
-        # self.pdfAllPreview = PDFPreviewWindow.PDFPreviewWindow(self.allReportResult, self.slices, self.clotReportResult)
-        self.button_01.setEnabled(True)
-        self.refeshGraph_01(self.slices[self.number - 1, :, :])
-        self.refeshGraph_02(self.slices[:, :, self.number_2 - 1])
-        self.refeshGraph_03(self.slices[:, self.number_3 - 1, :])
+        try:
+            self.numberOfScreen = 0
+            if (self.reportNeedChange):
+                self.objFlag = 3
+                mark_1 = 250  # 内部血块标记灰度
+                mark_2 = 251  # 内部血管标记灰度
+                self.obj = ClotDetect.ClotDetection()
+                self.obj_2 = VesselDetect.VesselDetection()
+                if (self.vesselReportNeedChange == True):
+                    self.slices, self.vesselReport, self.vesselReportResult = self.obj_2.Processing(self.slices,
+                                                                                                    self.slicesRGB, mark_2,
+                                                                                                    thresh=255, flag=True,
+                                                                                                    windowFlag=False,
+                                                                                                    ifClosed=True)
+                    self.slices[self.slices == mark_2] = 255
+                if (self.clotReportNeedChange == True):
+                    self.slices, self.clotReport, self.clotReportResult = self.obj.Processing(self.slices, self.slicesRGB,
+                                                                                              mark_1, thresh=254, flag=True,
+                                                                                              windowFlag=False,
+                                                                                              ifClosed=True)
+                    self.slices[self.slices == mark_1] = 254
+                self.clotReportNeedChange = False
+                self.vesselReportNeedChange = False
+                self.reportNeedChange = False
+            self.allReportResult = self.clotReport + "\n" + self.vesselReport
+            self.pdfAllPreview = PDFPreviewWindow.PDFPreviewWindow(self.allReportResult, self.slices, self.clotReportResult,
+                                                                   True, self.graphName[self.length - 1])
+            # self.pdfAllPreview = PDFPreviewWindow.PDFPreviewWindow(self.allReportResult, self.slices, self.clotReportResult)
+            self.pdfAllPreview._closeSignal01.connect(self.banButton)
+            self.button_01.setEnabled(True)
+            self.refeshGraph_01(self.slices[self.number - 1, :, :])
+            self.refeshGraph_02(self.slices[:, :, self.number_2 - 1])
+            self.refeshGraph_03(self.slices[:, self.number_3 - 1, :])
+        except:
+            pass
+
+    def banButton(self):
+         self.button_01.setEnabled(False)
 
     def MyPen(self):
         if (self.PenFlag):

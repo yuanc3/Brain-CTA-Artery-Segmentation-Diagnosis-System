@@ -15,9 +15,11 @@ class PDFPreviewWindow(QMainWindow):
     # _resultSignal02 = pyqtSignal(str)
     def __init__(self,content,slices,clot,myflag,name):
         super().__init__()
+        print("Enter Again")
         self.myflag=myflag
         self.getScreenShotFlag=False
         self.i=0
+        print(self.i)
         self.clotResult=clot
         self.content=content
         self.slices=slices
@@ -260,8 +262,13 @@ class PDFPreviewWindow(QMainWindow):
 
         if self.getScreenShotFlag==True:
             # pPdfWriter.newPage()
-            pPdfPainter.drawImage(QRect(0,self.rect.y()+100,self.image01.width()/2+300,self.image01.height()/2+300),self.fillLabel01.pixmap().toImage())
-            pPdfPainter.drawImage(QRect(self.image01.width()/2+500,self.rect.y()+100,self.image01.width()/2+300,self.image01.height()/2+300),self.fillLabel02.pixmap().toImage())
+            if self.i==1:
+                print(self.i)
+                pPdfPainter.drawImage(QRect(0,self.rect.y()+100,self.image01.width()/2+300,self.image01.height()/2+300),self.fillLabel01.pixmap().toImage())
+            if self.i==2:
+                print(self.i)
+                pPdfPainter.drawImage(QRect(0,self.rect.y()+100,self.image01.width()/2+300,self.image01.height()/2+300),self.fillLabel01.pixmap().toImage())
+                pPdfPainter.drawImage(QRect(self.image01.width()/2+500,self.rect.y()+100,self.image01.width()/2+300,self.image01.height()/2+300),self.fillLabel02.pixmap().toImage())
 
         # for i in range(0, len(self.clotResult)):
         #     print(self.clotResult[i])
@@ -356,6 +363,7 @@ class PDFPreviewWindow(QMainWindow):
         
             self.fillLabel02.setPixmap(image)
             self.fillLabel02.setAlignment(Qt.AlignCenter)
+            self.i+=1
             return
             #self._resultSignal02.emit("Second")
     
