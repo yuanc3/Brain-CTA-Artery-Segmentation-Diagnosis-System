@@ -904,7 +904,7 @@ class MyWindow(QMainWindow):
         buffer = 4096 * 100
         try:
             sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sk.connect(("10.141.255.252", 8000))
+            sk.connect(("IP Address", 8000))
         except ConnectionRefusedError:
             sk.close()
             # global processWindow
